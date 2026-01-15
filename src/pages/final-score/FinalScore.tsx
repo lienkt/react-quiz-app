@@ -31,7 +31,6 @@ const FinalScore = () => {
   function onSubmit(data: FormValues) {
     dispatch(
       updateLeaderboards({
-        id: Date.now(),
         ...data,
         score,
       })

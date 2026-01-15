@@ -38,12 +38,6 @@ function Question() {
   });
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
-    if (!questions.length) return;
-
-    generateOptions();
-  }, [questions]);
-
   function generateOptions() {
     const question = questions[questionIndex];
     const answers = [...question.incorrect_answers];
@@ -51,12 +45,33 @@ function Question() {
     setOptions(answers);
   }
 
+  React.useEffect(() => {
+    if (!questions.length) return;
+
+    generateOptions();
+  }, [questions]);
+
   // next question
   React.useEffect(() => {
     if (questionIndex === 0) return;
 
     generateOptions();
   }, [questions, questionIndex]);
+
+  function handleAnwser(content: string) {
+    const question = questions[questionIndex];
+
+    if (content === question.correct_answer) {
+      dispatch(setScore(score + 1));
+    }
+
+    if (questionIndex + 1 === questions.length) {
+      navigate("/final-score");
+      return;
+    }
+    dispatch(setCurrentQuestionIndex(questionIndex + 1));
+    setCountTime(DIFFICULTY_TIME["easy"]);
+  }
 
   // count timer
   React.useEffect(() => {
@@ -76,21 +91,6 @@ function Question() {
       clearInterval(timer);
     };
   }, [options]);
-
-  function handleAnwser(content: string) {
-    const question = questions[questionIndex];
-
-    if (content === question.correct_answer) {
-      dispatch(setScore(score + 1));
-    }
-
-    if (questionIndex + 1 === questions.length) {
-      navigate("/final-score");
-      return;
-    }
-    dispatch(setCurrentQuestionIndex(questionIndex + 1));
-    setCountTime(DIFFICULTY_TIME["easy"]);
-  }
 
   return (
     <>

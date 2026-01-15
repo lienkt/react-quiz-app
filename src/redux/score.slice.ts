@@ -6,6 +6,13 @@ export interface VariablesSliceState {
   leaderboards: ILeaderboards[];
 }
 
+export interface ILeaderboardPayload {
+  first_name: string;
+  last_name: string;
+  email: string;
+  score: number;
+}
+
 const initialState: VariablesSliceState = {
   score: 0,
   leaderboards: [],
@@ -18,8 +25,11 @@ const scoreSlice = createSlice({
     setScore: (state, action: PayloadAction<number>) => {
       state.score = action.payload;
     },
-    updateLeaderboards: (state, action: PayloadAction<ILeaderboards>) => {
-      state.leaderboards.push(action.payload);
+    updateLeaderboards: (state, action: PayloadAction<ILeaderboardPayload>) => {
+      state.leaderboards.push({
+        id: Date.now(),
+        ...action.payload,
+      });
 
       // SORT DESC BY SCORE
       state.leaderboards.sort((a, b) => b.score - a.score);

@@ -17,8 +17,13 @@ export const useFetchCategories = () => {
         const resp = await fetch("https://opentdb.com/api_category.php");
         const data = await resp.json();
         dispatch(setCategories(data.trivia_categories));
-      } catch (err) {
-        console.log("can not fetch categories");
+        // } catch (err) {
+        //   console.error("can not fetch categories", err);
+        // }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error(err.message);
+        }
       }
     }
     fetchCategories();
