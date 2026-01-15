@@ -17,6 +17,7 @@ import type { RootState } from "../../store";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router";
 import { formatDate } from "../../utils/formatTimer";
+import type { ILeaderboards } from "../../types";
 
 const csvHeaders = ["ID", "First Name", "Last Name", "Email", "Score"];
 
@@ -27,7 +28,7 @@ function Leaderboard() {
   );
 
   const csvData = React.useMemo(() => {
-    const data = leaderboards.map((item) => {
+    const data = leaderboards.map((item: ILeaderboards) => {
       return [item.id, item.first_name, item.last_name, item.email, item.score];
     });
     return [csvHeaders, ...data];
@@ -73,7 +74,7 @@ function Leaderboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {leaderboards.map((row) => (
+              {leaderboards.map((row: ILeaderboards) => (
                 <TableRow
                   key={row.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

@@ -12,7 +12,7 @@ import Select from "@mui/material/Select";
 import { useNavigate } from "react-router";
 import { useFetchCategories } from "../../hooks/useFetchCategories";
 import { useForm } from "react-hook-form";
-import type { Difficulty, QuestionType } from "../../types";
+import type { Difficulty, ICategory, QuestionType } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentAmount,
@@ -78,7 +78,7 @@ export default function Dashboard() {
               required: "Please select a category",
             })}
           >
-            {categories.map((cat) => (
+            {categories.map((cat: ICategory) => (
               <MenuItem value={cat.id}>{cat.name}</MenuItem>
             ))}
           </Select>
