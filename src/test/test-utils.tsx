@@ -1,15 +1,17 @@
-import React, { ReactElement } from "react";
-import { render, RenderOptions } from "@testing-library/react";
+import React from "react";
+import type { ReactElement } from "react";
+import { render } from "@testing-library/react";
+import type { RenderOptions } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router";
-import { configureStore, PreloadedState } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { questionsReducer } from "../redux/questions.slice";
 import { scoreReducer } from "../redux/score.slice";
 import type { RootState } from "../store";
 
 // Create a custom render function that includes Redux Provider and Router
 interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {
-  preloadedState?: PreloadedState<RootState>;
+  preloadedState?: Partial<RootState>;
   store?: ReturnType<typeof configureStore>;
 }
 
@@ -19,10 +21,10 @@ export function renderWithProviders(
     preloadedState = {},
     store = configureStore({
       reducer: {
-        questions: questionsReducer,
-        score: scoreReducer,
+        questions: questionsReducer as any,
+        score: scoreReducer as any,
       },
-      preloadedState,
+      preloadedState: preloadedState as Partial<RootState>,
     }),
     ...renderOptions
   }: ExtendedRenderOptions = {}

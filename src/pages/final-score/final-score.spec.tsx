@@ -17,6 +17,7 @@ describe("FinalScore Component", () => {
   const initialState = {
     questions: {
       categories: [],
+      isFetchedCategories: false,
       current_category: 0,
       current_difficulty: "easy" as const,
       current_type: "multiple" as const,
