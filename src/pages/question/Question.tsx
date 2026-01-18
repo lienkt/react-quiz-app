@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, LinearProgress } from "@mui/material";
 import { decode } from "html-entities";
 import { useNavigate } from "react-router";
 import { DIFFICULTY_TIME } from "../../configs";
@@ -94,6 +94,35 @@ function Question() {
 
   return (
     <>
+      <Box sx={{ mb: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+          <Typography variant="body2">Time Remaining</Typography>
+          <Typography 
+            variant="body2"
+            sx={{
+              color: countTime < 10 ? "red" : "inherit",
+              fontWeight: countTime < 10 ? "bold" : "normal",
+            }}
+          >
+            {formatTimer(countTime)}
+          </Typography>
+        </Box>
+        <LinearProgress 
+          variant="determinate" 
+          value={(countTime / DIFFICULTY_TIME["easy"]) * 100}
+          sx={{
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: "#e0e0e0",
+            "& .MuiLinearProgress-bar": {
+              borderRadius: 4,
+              backgroundColor: countTime < 10 ? "#f44336" : "#4caf50",
+              transition: "all 0.3s ease",
+            },
+          }}
+        />
+      </Box>
+
       <Typography
         variant="h3"
         gutterBottom
@@ -139,15 +168,6 @@ function Question() {
       >
         <Typography variant="body1" gutterBottom>
           Score: {score}/{questions.length}
-        </Typography>
-        <Typography
-          variant="body1"
-          gutterBottom
-          sx={{
-            color: countTime < 10 ? "red" : "black",
-          }}
-        >
-          Timer: {formatTimer(countTime)}
         </Typography>
       </Box>
     </>

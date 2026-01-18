@@ -27,7 +27,7 @@ export function renderWithProviders(
       preloadedState: preloadedState as Partial<RootState>,
     }),
     ...renderOptions
-  }: ExtendedRenderOptions = {}
+  }: ExtendedRenderOptions = {},
 ) {
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (

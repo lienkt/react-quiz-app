@@ -27,6 +27,7 @@ describe("FinalScore Component", () => {
     score: {
       score: 8,
       leaderboards: [],
+      leaderboardChartData: {},
     },
   };
 

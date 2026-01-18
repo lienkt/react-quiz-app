@@ -51,6 +51,7 @@ describe("Question Component", () => {
     score: {
       score: 0,
       leaderboards: [],
+      leaderboardChartData: {},
     },
   };
 

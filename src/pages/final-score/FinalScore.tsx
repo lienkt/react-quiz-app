@@ -33,7 +33,7 @@ const FinalScore = () => {
       updateLeaderboards({
         ...data,
         score,
-      })
+      }),
     );
 
     dispatch(setCurrentQuestionIndex(0));

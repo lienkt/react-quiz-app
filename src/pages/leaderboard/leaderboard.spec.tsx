@@ -14,6 +14,11 @@ vi.mock("react-router", async () => {
   };
 });
 
+// Mock Chart component
+vi.mock("react-apexcharts", () => ({
+  default: () => <div data-testid="mock-chart">Mock Chart</div>,
+}));
+
 describe("Leaderboard Component", () => {
   const initialState = {
     questions: {
@@ -43,6 +48,16 @@ describe("Leaderboard Component", () => {
           score: 8,
         },
       ],
+      leaderboardChartData: {
+        "john@example.com": [
+          { day: "1", score: 5 },
+          { day: "2", score: 9 },
+        ],
+        "jane@example.com": [
+          { day: "1", score: 4 },
+          { day: "2", score: 8 },
+        ],
+      },
     },
   };
 
@@ -92,6 +107,7 @@ describe("Leaderboard Component", () => {
       score: {
         score: 0,
         leaderboards: [],
+        leaderboardChartData: {},
       },
     };
 
