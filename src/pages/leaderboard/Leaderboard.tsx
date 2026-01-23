@@ -14,6 +14,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { CSVLink } from "react-csv";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import Pagination from "@mui/material/Pagination";
 
 import type { RootState } from "../../store";
 import Button from "@mui/material/Button";
@@ -22,9 +23,11 @@ import { formatDate } from "../../utils/formatTimer";
 import type { ILeaderboards } from "../../types";
 
 const csvHeaders = ["ID", "First Name", "Last Name", "Email", "Score"];
+const ITEMS_PER_PAGE = 10;
 
 function Leaderboard() {
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = React.useState(1);
   const leaderboards = useSelector(
     (state: RootState) => state.score.leaderboards,
   );
@@ -92,6 +95,19 @@ function Leaderboard() {
     };
   }, [leaderboardChartData]);
 
+  // Calculate pagination
+  const totalPages = Math.ceil(leaderboards.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedLeaderboards = leaderboards.slice(startIndex, endIndex);
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    page: number,
+  ) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Container maxWidth="md">
       <Box sx={{ width: "100%" }}>
@@ -142,29 +158,59 @@ function Leaderboard() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TableCell align="center">Order</TableCell>
                 <TableCell>First Name</TableCell>
                 <TableCell>Last Name</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Score</TableCell>
+                <TableCell>Time</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {leaderboards.map((row: ILeaderboards) => (
-                <TableRow
-                  key={row.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.first_name}
-                  </TableCell>
-                  <TableCell>{row.last_name}</TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.score}</TableCell>
-                </TableRow>
-              ))}
+              {paginatedLeaderboards.map(
+                (row: ILeaderboards, index: number) => {
+                  const orderNumber = startIndex + index + 1;
+                  const attemptDate = new Date(row.id);
+                  const formatDateStr = (date: Date) => {
+                    const hours = String(date.getHours()).padStart(2, "0");
+                    const minutes = String(date.getMinutes()).padStart(2, "0");
+                    const day = String(date.getDate()).padStart(2, "0");
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const year = date.getFullYear();
+                    return `${hours}:${minutes} ${day}/${month}/${year}`;
+                  };
+
+                  return (
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell align="center">{orderNumber}</TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.first_name}
+                      </TableCell>
+                      <TableCell>{row.last_name}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.score}</TableCell>
+                      <TableCell>{formatDateStr(attemptDate)}</TableCell>
+                    </TableRow>
+                  );
+                },
+              )}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {totalPages > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        )}
       </Box>
     </Container>
   );
