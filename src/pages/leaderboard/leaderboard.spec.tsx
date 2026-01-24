@@ -88,10 +88,19 @@ describe("Leaderboard Component", () => {
   it("should render table headers", () => {
     renderWithProviders(<Leaderboard />, { preloadedState: initialState });
 
+    expect(screen.getByText(/order/i)).toBeInTheDocument();
     expect(screen.getByText(/first name/i)).toBeInTheDocument();
     expect(screen.getByText(/last name/i)).toBeInTheDocument();
     expect(screen.getByText(/email/i)).toBeInTheDocument();
     expect(screen.getByText(/score/i)).toBeInTheDocument();
+    expect(screen.getByText(/time/i)).toBeInTheDocument();
+  });
+
+  it("should display order numbers in table", () => {
+    renderWithProviders(<Leaderboard />, { preloadedState: initialState });
+
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
   });
 
   it("should render CSV download button", () => {
@@ -127,5 +136,47 @@ describe("Leaderboard Component", () => {
 
     await user.click(homeButton);
     expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+
+  it("should display pagination for multiple items", () => {
+    const leaderboards = Array.from({ length: 15 }, (_, i) => ({
+      id: i + 1,
+      first_name: `User${i + 1}`,
+      last_name: "Test",
+      email: `user${i + 1}@example.com`,
+      score: 10 - i,
+    }));
+
+    const leaderboardChartData = leaderboards.reduce(
+      (acc, user) => {
+        acc[user.email] = [
+          { day: "1", score: user.score - 1, id: user.id },
+          { day: "2", score: user.score, id: user.id + 1000 },
+        ];
+        return acc;
+      },
+      {} as Record<string, Array<{ day: string; score: number; id: number }>>,
+    );
+
+    const manyItemsState = {
+      ...initialState,
+      score: {
+        ...initialState.score,
+        leaderboards,
+        leaderboardChartData,
+      },
+    };
+
+    renderWithProviders(<Leaderboard />, { preloadedState: manyItemsState });
+
+    // Should show pagination with 2 pages (10 + 5 items)
+    const paginationNav = screen.getByRole("navigation", {
+      name: /pagination/i,
+    });
+    expect(paginationNav).toBeInTheDocument();
+
+    // Check for page 2 button
+    const page2Button = screen.getByRole("button", { name: /go to page 2/i });
+    expect(page2Button).toBeInTheDocument();
   });
 });
