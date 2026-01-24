@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../redux/questions.slice";
 
 export const useFetchCategories = () => {
+  
   const isFetchedCategories = useSelector(
     (state: RootState) => state.questions.isFetchedCategories
   );
