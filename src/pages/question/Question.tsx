@@ -4,11 +4,11 @@ import { decode } from "html-entities";
 import { useNavigate } from "react-router";
 import { DIFFICULTY_TIME } from "../../configs";
 import { formatTimer } from "../../utils/formatTimer";
-import { useFetchQuestions } from "../../hooks/useFetchQuestions";
 import type { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentQuestionIndex } from "../../redux/questions.slice";
 import { setScore } from "../../redux/score.slice";
+import { useFetch } from "../../hooks/useFetch";
 
 function Question() {
   const navigate = useNavigate();
@@ -30,12 +30,17 @@ function Question() {
   const currentAmount = useSelector(
     (state: RootState) => state.questions.current_amount
   );
-  const { questions } = useFetchQuestions({
-    amount: currentAmount,
-    category: currentCategory,
-    difficulty: currentDifficulty,
-    type: currentType,
+ 
+  const params = new URLSearchParams({
+    amount: currentAmount.toString(),
+    category: currentCategory.toString(),
+    currentDifficulty,
+    currentType,
   });
+  const { dataSource } = useFetch({
+    apiUrl:  `https://opentdb.com/api.php?${params.toString()}`
+  })
+  const questions = dataSource.results || [];
   const dispatch = useDispatch();
 
   function generateOptions() {

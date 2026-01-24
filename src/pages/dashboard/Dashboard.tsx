@@ -10,17 +10,16 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useNavigate } from "react-router";
-import { useFetchCategories } from "../../hooks/useFetchCategories";
 import { useForm } from "react-hook-form";
 import type { Difficulty, ICategory, QuestionType } from "../../types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   setCurrentAmount,
   setCurrentCategory,
   setCurrentDifficulty,
   setCurrentType,
 } from "../../redux/questions.slice";
-import type { RootState } from "../../store";
+import { useFetch } from "../../hooks/useFetch";
 
 type FormValues = {
   category: number;
@@ -31,12 +30,11 @@ type FormValues = {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  useFetchCategories();
-  const categories = useSelector(
-    (state: RootState) => state.questions.categories
-  );
-
   const dispatch = useDispatch();
+  const { dataSource } = useFetch({
+    apiUrl: "https://opentdb.com/api_category.php"
+  });
+  const categories = dataSource.trivia_categories || [];
 
   const {
     register,
